@@ -1,7 +1,7 @@
-from distutils.core import setup
+from setuptools import setup
 
 kwargs = {
-    'name' : 'threadedcomments',
+    'name' : 'threadedcomments-lanata',
     'version' : '0.4',
     'description' : 'A simple yet flexible threaded commenting system.',
     'author' : 'Eric Florenzano',
@@ -11,6 +11,7 @@ kwargs = {
                   'threadedcomments.templatetags',
                   'threadedcomments.management',
                   'threadedcomments.management.commands'],
+    'zip_safe' : False,
     'classifiers' : ['Development Status :: 4 - Beta',
                      'Environment :: Web Environment',
                      'Intended Audience :: Developers',
