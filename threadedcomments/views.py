@@ -73,6 +73,12 @@ def free_comment(request, content_type=None, object_id=None, edit_id=None, paren
     """
     if not edit_id and not (content_type and object_id):
         raise Http404 # Must specify either content_type and object_id or edit_id
+    content_type = get_object_or_404(ContentType, id = int(content_type))
+    object_id = int(object_id)
+    parent = parent_id and get_object_or_404(model, id = int(parent_id)) or None
+    extra_context['object'] = content_type.get_object_for_this_type(pk=object_id)
+    extra_context['parent'] = parent
+
     if "preview" in request.POST:
         return _preview(request, context_processors, extra_context, form_class=form_class)
     if edit_id:
@@ -85,12 +91,12 @@ def free_comment(request, content_type=None, object_id=None, edit_id=None, paren
         new_comment = form.save(commit=False)
         if not edit_id:
             new_comment.ip_address = request.META.get('REMOTE_ADDR', None)
-            new_comment.content_type = get_object_or_404(ContentType, id = int(content_type))
-            new_comment.object_id = int(object_id)
+            new_comment.content_type = content_type
+            new_comment.object_id = object_id
         if model == ThreadedComment:
             new_comment.user = request.user
-        if parent_id:
-            new_comment.parent = get_object_or_404(model, id = int(parent_id))
+        if parent:
+            new_comment.parent = parent
         new_comment.save()
         if model == ThreadedComment:
             if add_messages:
